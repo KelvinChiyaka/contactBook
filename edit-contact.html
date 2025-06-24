@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body onload="getContact()">
+    <div id="avatarImage"></div>
+    <form id="editForm">
+        <label for="firstname">First name:</label>
+        <input type="text" name="firstname" id="firstname" readonly><br />
+        <label for="lastname">Last name:</label>
+        <input type="text" name="lastname" id="lastname" readonly><br />
+        <label for="mobile">Mobile:</label>
+        <input type="text" name="mobile" id="mobile" readonly><br />
+        <label for="email">Email:</label>
+        <input type="text" name="email" id="email" readonly><br />
+        <label for="avatar" id="avatarLabel" hidden>Change profile image</label><br />
+        <input type="file" name="avatar" id="avatar" hidden>
+        <br />
+        <button type="submit" id="submitForm" hidden>Submit</button>
+    </form>
+    <br /><br />
+    <button id="homelink" type="button">Home</button>
+    <button id="editContact" type="button">Edit</button>
+    <button id="deleteContact" type="button">Delete</button>
+
+    <script src="config.js"></script>
+
+    <script>
+
+        var id = getId(); // get the id from the URL
+        document.getElementById("homelink").addEventListener('click', homelink);
+        document.getElementById("editContact").addEventListener('click', editContact);
+        console.log("the id is: " + id);
+
+        function getId() { // function to get the id from the URL
+            var url = window.location.href;
+            var pos = url.search("="); // find the position of the equal sign
+            var id = url.slice(pos + 1); // get the id from the URL
+            return id; // return the id
+        }
+
+        function getContact() { // function to get the contact from the server
+            fetch(rootPath + 'controller/get-contacts/?id=' + id) // make a GET request to the server
+                .then(function (response) { // check if the response is ok
+                    return response.json(); // parse the response as JSON
+                })
+                .then(function (data) { // call the displayOutput function with the data
+                    displayOutput(data);
+                    console.log(data);
+                });
+        }
+
+        function homelink() { // function to go back to the home page when ho
+            window.open("index.html", "_self"); // opens up a new window
+        }
+
+        function displayOutput(data) {
+            avatarImg = `
+                <img src="${rootPath}/controller/uploads/${data[0].avatar}" width="200" />
+                `
+            document.getElementById("avatarImage").innerHTML = avatarImg;
+            document.getElementById("firstname").value = data[0].firstname;
+            document.getElementById("lastname").value = data[0].lastname;
+            document.getElementById("mobile").value = data[0].mobile;
+            document.getElementById("email").value = data[0].email;
+        }
+
+        function editContact() {
+            document.getElementById("firstname").readOnly = false;
+            document.getElementById("lastname").readOnly = false;
+            document.getElementById("mobile").readOnly = false;
+            document.getElementById("email").readOnly = false;
+            document.getElementById("avatar").hidden = false;
+            document.getElementById("submitForm").hidden = false;
+        }
+
+        function submitForm(e) {
+            e.preventDefault();
+
+            const form = new FormData(document.querySelector("#editForm"));
+            form.append('apiKey', apiKey);
+            form.append('id', id);
+
+
+        }
+
+    </script>
+
+</body>
+
+</html>
