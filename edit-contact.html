@@ -27,13 +27,13 @@
     <button id="deleteContact" type="button">Delete</button>
 
     <script src="config.js"></script>
-
     <script>
 
         var id = getId(); // get the id from the URL
         document.getElementById("homelink").addEventListener('click', homelink);
         document.getElementById("editContact").addEventListener('click', editContact);
-        console.log("the id is: " + id);
+        document.getElementById("submitForm").addEventListener('click', submitForm);
+        document.getElementById("deleteContact").addEventListener('click', deleteContact);
 
         function getId() { // function to get the id from the URL
             var url = window.location.href;
@@ -49,7 +49,7 @@
                 })
                 .then(function (data) { // call the displayOutput function with the data
                     displayOutput(data);
-                    console.log(data);
+
                 });
         }
 
@@ -84,9 +84,42 @@
             form.append('apiKey', apiKey);
             form.append('id', id);
 
-
+            fetch(rootPath + 'controller/edit-contact/', {
+                method: 'POST',
+                headers: { 'Accept': 'application/json, *.*' },
+                body: form
+            })
+                .then(function (response) {
+                    return response.text();
+                })
+                .then(function (data) {
+                    if (data == "1") {
+                        alert("contact edited.")
+                        homelink();
+                    } else {
+                        alert(data);
+                        homelink()
+                    }
+                })
         }
 
+        function deleteContact() {
+            var confirmDelete = confirm("Are you sure you want to delete this contact?");
+            if (confirmDelete) {
+                fetch(rootPath + 'controller/delete-contact/?id=' + id)
+                    .then(function (response) {
+                        return response.text();
+                    })
+                    .then(function (data) {
+                        if (data == "1") {
+                            alert("contact deleted.")
+                            homelink();
+                        } else {
+                            alert(data);
+                        }
+                    });
+            }
+        }
     </script>
 
 </body>

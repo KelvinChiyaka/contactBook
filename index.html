@@ -24,7 +24,6 @@
                 })
                 .then(function (data) {
                     displayOutput(data); // call the displayOutput function with the data
-                    //console.log(data);
                 })
         }
 
@@ -36,7 +35,7 @@
                 output +=
                     `
                         <tr onclick="editContact(${data[a].id})">
-                            
+
                             <td><img src="${rootPath}controller/uploads/${data[a].avatar}" width="40"/></td>
                             <td><h5>${data[a].firstname}</h5></td>
                             <td><h5>${data[a].lastname}</h5></td>
